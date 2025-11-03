@@ -2,32 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    function getPost()
+    // List all posts
+    public function index()
     {
-        $post = DB::table("posts") -> get();
-        return $post;
+        $posts = DB::table('posts')->get();
+        return view('posts.index', compact('posts'));
     }
 
-    // add new post 
-    function addNewPost()
+    // Show the create post form
+    public function showCreateForm()
     {
-        $post = DB::table('posts') -> select( "INSERT INTO posts (id,user_id,title,body,created_at,updated_at) VALUES (? ,? ,? ,? ,timestamp, timestamp )") -> get();
-        return $post;
+        // Needs a blade file: posts/create.blade.php
+        return view('posts.create');
     }
-    // update the existing post 
-    function updatePost()
+
+    // Add new post
+    public function addNewPost(Request $request)
     {
-        $post = DB::table('posts') -> select('UPDATE tasks SET title = ? and body = ? WHERE id = ?') -> get();
-        return $post;
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'title'   => 'required|string|max:255',
+            'body'    => 'required|string',
+        ]);
+
+        DB::table('posts')->insert([
+            'user_id'    => $request->input('user_id'),
+            'title'      => $request->input('title'),
+            'body'       => $request->input('body'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // Redirect to post list on success
+        return redirect()->route('posts.index');
     }
-    // delete that post 
-    function deletePost()
+
+    // Show edit form for post
+    public function showEditForm($id)
     {
-        $post = DB::table('posts') -> select('DELETE FROM posts WHERE id = ?') -> get();
+        $post = DB::table('posts')->where('id', $id)->first();
+        return view('posts.edit', compact('post'));
     }
-   
+
+    // Update an existing post
+    public function updatePost(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'body'  => 'required|string',
+        ]);
+
+        DB::table('posts')
+            ->where('id', $id)
+            ->update([
+                'title'      => $request->input('title'),
+                'body'       => $request->input('body'),
+                'updated_at' => now(),
+            ]);
+
+        // Redirect to post list after update
+        return redirect()->route('posts.index');
+    }
+
+    // Delete a post
+    public function deletePost($id)
+    {
+        DB::table('posts')->where('id', $id)->delete();
+        return redirect()->route('posts.index');
+    }
 }
+?>
