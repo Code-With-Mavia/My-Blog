@@ -28,8 +28,8 @@ class PostController extends Controller
         (
     [
                 'user_id' => 'required|exists:users,id', // to check it valid exisits in db
-                'title'   => 'required|string|max:255',
-                'body'    => 'required|string',
+                'title'   => 'required|string|max:255', // max lenght of title
+                'body'    => 'required|string', 
             ]
         );
 
