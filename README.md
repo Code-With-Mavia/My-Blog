@@ -83,7 +83,7 @@ php artisan serve
 
 ## ✨ Live Demo
 
-*Coming Soon – deploy to Netlify, Vercel, or Laravel Forge and link here!*
+*Coming Soon*
 
 ---
 
