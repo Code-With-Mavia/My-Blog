@@ -13,6 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         //
     })
+    ->withMiddleware(function (Middleware $middleware): void {
+    // Register your custom middleware alias for routes
+    $middleware->alias([
+        'user_session' => \App\Http\Middleware\RequireUserSession::class,
+    ]);
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+    
+    
