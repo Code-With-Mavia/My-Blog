@@ -11,11 +11,9 @@ class UserController extends Controller
 
     function getUserInfo()
     {
-        return DB::select('SELECT * FROM USERS');
+        $result = DB::table("users") -> get();
+        return $result;
     }
 
-    function getUserName()
-    {
-        return DB::select( 'SELECT name,email,created_at FROM USERS');
-    }
+   
 }
