@@ -3,12 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
+Route::get('/', function () 
+{
     return view('welcome');
 });
 
-Route::controller(UserController::class)->group(function () {
-    Route::get('user', 'getUser');
-    Route::get('userInfo', 'getUserInfo');
-});
+Route::controller(UserController::class) -> group
+(function () 
+    {
+        Route::get('user', 'getUser');
+        Route::get('userInfo', 'getUserInfo');
+    }
+);
 ?>
