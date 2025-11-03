@@ -13,6 +13,7 @@ Route::controller(UserController::class) -> group
     {
         Route::get('user', 'getUser');
         Route::get('userInfo', 'getUserInfo');
+        Route::get('userName','getUserName');
     }
 );
 ?>
