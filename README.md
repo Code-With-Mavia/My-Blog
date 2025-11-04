@@ -13,7 +13,7 @@
 [![Security](https://img.shields.io/badge/security-maintained-blue)](#)
 [![Stars](https://img.shields.io/github/stars/YOUR_USERNAME/laravel-blog?style=social)](https://github.com/Code-With-Mavia/My-Blog)
 [![Forks](https://img.shields.io/github/forks/YOUR_USERNAME/laravel-blog?style=social)](https://github.com/Code-With-Mavia/My-Blog/fork)
-[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)]
 
 ---
 
