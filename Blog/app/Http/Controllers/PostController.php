@@ -1,11 +1,11 @@
 <?php
 
-namespace Laravel_core\MyBlog\Blog\App\Http\Controllers;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class PostController 
+class PostController extends Controller
 {
     public function index()
     {

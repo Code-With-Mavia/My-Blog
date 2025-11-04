@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel_core\MyBlog\Blog\App\Http\Controllers\PostController;
-use Laravel_core\MyBlog\Blog\App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\PostControllerApi as ApiPostController;
 
 /** Example: Authenticated user route, if using sanctum */
 Route::get('/user', function (Request $request) {
@@ -14,9 +13,12 @@ Route::get('/user', function (Request $request) {
 Route::get('/GreetingApi', function () {
     return ['name' => 'Greeting Api'];
 });
-Route::post('/login', [AuthController::class, 'login']);
-// Route::post('/register', [AuthController::class, 'register']);
-// Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::get('/posts', [PostController::class, 'listPosts']); // GET: all posts
+
+Route::get('/posts', [ApiPostController::class, 'index']);
+Route::get('/posts/{id}', [ApiPostController::class, 'show']);
+Route::post('/posts', [ApiPostController::class, 'store']);
+Route::put('/posts/{id}', [ApiPostController::class, 'update']);
+Route::delete('/posts/{id}', [ApiPostController::class, 'destroy']);
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel_core\MyBlog\Blog\App\Http\Controllers;
+namespace App\Http\Controllers;
 
 abstract class Controller
 {

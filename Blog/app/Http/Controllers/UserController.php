@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
-class UserController
+class UserController extends Controller
 {
     public function getUser()
     {

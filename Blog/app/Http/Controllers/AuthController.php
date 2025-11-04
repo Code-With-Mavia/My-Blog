@@ -1,10 +1,10 @@
 <?php
-namespace Laravel_core\MyBlog\Blog\App\Http\Controllers;
+namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController
+class AuthController extends Controller
 {
     public function register(Request $request)
     {
