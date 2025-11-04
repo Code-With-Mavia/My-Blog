@@ -5,11 +5,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 
+// Redirect landing page '/' to login
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
-// User routes (if you want to keep these for admin etc)
+// User (admin) routes
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'getUser');
     Route::get('userInfo', 'getUserInfo');
