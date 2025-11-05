@@ -40,9 +40,9 @@ Route::prefix('posts')->group(function () {
     // GET /api/posts/{id}
     Route::get('/{id}', [ApiPostController::class, 'show']);
 
-     // Add a comment to a post
-     // POST /api/posts/comments/id
-     Route::post('/comments/{id}', [ApiPostController::class,'postComments']); 
+    // Add a comment to a post
+    // POST /api/posts/comments/id
+    Route::post('/comments/{id}', [ApiPostController::class,'postComments']); 
 
     // Create a new post
     // POST /api/posts
@@ -60,13 +60,14 @@ Route::prefix('posts')->group(function () {
 
 //  USERS ROUTES 
 Route::prefix('users')->group(function () {
-    // Get all posts that belong to a specific user
-    // GET /api/users/{id}/posts
-    Route::get('/{id}/posts', [ApiPostController::class, 'userPosts']);
 
     // List the 10 most recently registered users
     // GET /api/users/recent
     Route::get('/recent', [ApiPostController::class, 'recentUsers']);
+
+    // Get all posts that belong to a specific user
+    // GET /api/users/{id}/posts
+    Route::get('/{id}/posts', [ApiPostController::class, 'userPosts']);
 
     // Get simple stats (like post count) for a user
     // GET /api/users/{id}/stats

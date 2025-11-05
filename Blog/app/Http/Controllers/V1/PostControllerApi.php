@@ -81,16 +81,16 @@ class PostControllerApi extends Controller
                 throw new Exception('Failed to update post. Please try again later');
             }
             $data = $request->validate([
-                'title' => 'string|max:255',
-                'body'  => 'string',
-                'comments' => 'string',
+                'title' => 'required|string|max:255',
+                'body'  => 'required|string',
+                'comments' => 'required|string',
             ]);
             $post->update($data);
             return response()->json($post, 200);
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -112,7 +112,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -131,7 +131,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -254,7 +254,8 @@ class PostControllerApi extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'posts_count' => $user->posts()->count(),
-                'registered_at' => $user->created_at
+                'registered_at' => $user->created_at,
+                'updated_at'=> $user->updated_at,
             ]);
         } 
         catch (Exception $e) 
