@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\V1\Models\Post;
 use App\Http\Controllers\V1\Models\User;
-
+use Exception;
 class PostControllerApi extends Controller
 {
     public function test()
@@ -20,11 +20,15 @@ class PostControllerApi extends Controller
         try 
         {
             $posts = Post::select('id', 'user_id', 'title', 'comments', 'created_at','updated_at')->latest()->paginate(15);
+            if ($posts->isEmpty())
+            {
+                throw new Exception('Failed to fetch posts. Please try again later');
+            }
             return response()->json($posts);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => "Failed to fetch posts. Please try again later"],500);   
+            return response()->json(['error' => $e->getMessage()],500);   
         }
     }
 
@@ -34,11 +38,15 @@ class PostControllerApi extends Controller
         try 
         {
             $post = Post::find($id);
+            if(!$post)
+            {
+                throw new Exception('Post not found. Please try again later');
+            }
             return response()->json($post);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Post not found. Please try again later'], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 
@@ -56,7 +64,7 @@ class PostControllerApi extends Controller
             $post = Post::create($data);
             return response()->json($post, 201);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
             return response()->json(['error' => 'Failed to create post. Please try again later'], 500);
         }
@@ -70,19 +78,19 @@ class PostControllerApi extends Controller
             $post = Post::find($id);
             if(! $post)
             {
-                return response()->json(['error'=> 'Post not found'],404);
+                throw new Exception('Failed to update post. Please try again later');
             }
             $data = $request->validate([
                 'title' => 'string|max:255',
                 'body'  => 'string',
-                'comments' => 'required|string',
+                'comments' => 'string',
             ]);
             $post->update($data);
             return response()->json($post, 200);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to update post. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -93,7 +101,7 @@ class PostControllerApi extends Controller
         {
             $post = Post::find($id);
             if (!$post) {
-                return response()->json(['error' => 'Post not found'], 404);
+                throw new Exception('Failed to update comments. Please try again later');
             }
             $data = $request->validate([
                 'comments' => 'required|string',
@@ -102,9 +110,9 @@ class PostControllerApi extends Controller
             $post->save();
             return response()->json($post, 200);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to update comments. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -114,11 +122,16 @@ class PostControllerApi extends Controller
         try 
         {
             $posts = Post::select(['id','user_id','title','body','comments','created_at','updated_at'])->latest()->paginate(10);
+            if ($posts->isEmpty()) 
+            {
+                throw new Exception('Failed to fetch comments. Please try again later');
+            }
+
             return response()->json($posts);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to fetch comments. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -129,14 +142,14 @@ class PostControllerApi extends Controller
             $post = Post::find($id);
             if (!$post) 
             {
-                return response()->json(['error' => 'Post Not found'], 404);
+                throw new Exception('Failed to delete post. Please try again later');
             }
             $post->delete();
             return response()->json(['message' => 'Deleted']);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to delete post. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
 
         }
     }
@@ -149,19 +162,15 @@ class PostControllerApi extends Controller
             $post = Post::find($id);
             if (!$post) 
             {
-                return response()->json(['error' => 'Post not found'], 404);
+                throw new Exception('Post not found',404);
             }
             $user = $post->user;
-            if (!$user) 
-            {
-                return response()->json(['error' => 'User not found'], 404);
-            }
             return response()->json($user);
         } 
-        catch (\Exception $e) 
+        catch(Exception $e) 
         {
             // Responsibility: Unexpected error handling
-            return response()->json(['error' => 'Failed to fetch post author. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -174,14 +183,14 @@ class PostControllerApi extends Controller
             $query = $request->query('query');
             if (empty($query)) 
             {
-                return response()->json([]);
+                throw new Exception('Failed to search posts. Please try again later');
             }
             $posts = Post::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($query) . '%'])->get();
             return response()->json($posts);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error'=> 'Failed to search posts. Please try again later'], 500);
+            return response()->json(['error'=> $e->getMessage()], 500);
         }
     }
 
@@ -194,13 +203,13 @@ class PostControllerApi extends Controller
             $user = User::find($id);
             if (!$user) 
             {
-                return response()->json(['error' => 'User not found'], 404);
+               throw new Exception('Failed to fetch user posts. Please try again later');
             }
             return response()->json($user->posts);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to fetch user posts. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -210,6 +219,10 @@ class PostControllerApi extends Controller
         try 
         {
             $users = User::latest()->limit(10)->get();
+            if(count($users) == 0)
+            {
+                throw new Exception('Failed to fetch recent users. Please try again later');
+            }
             $userSummaries = $users->map(function ($user) { 
                 return [
                 'name' => $user->name,
@@ -221,9 +234,9 @@ class PostControllerApi extends Controller
             });
             return response()->json($userSummaries, 200);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to fetch recent users. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -233,18 +246,20 @@ class PostControllerApi extends Controller
         try 
         {
             $user = User::find($id);
-            if (!$user) return response()->json(['error'=>'User not found'], 404);
-            $count = $user->posts()->count();
+            if (!$user) 
+            {
+                throw new Exception('Failed to fetch user stats. Please try again later');
+            }
             return response()->json([
                 'name' => $user->name,
                 'email' => $user->email,
-                'posts_count' => $count,
+                'posts_count' => $user->posts()->count(),
                 'registered_at' => $user->created_at
             ]);
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to fetch user stats. Please try again later'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
