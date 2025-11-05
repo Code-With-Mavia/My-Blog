@@ -78,7 +78,7 @@ class PostControllerApi extends Controller
 
     // GET list comments
     // api/comments
-    public function listComments(Request $request)
+    public function listComments()
     {
         return response()->json(Post::all(['id','title','body','comments']));
     }
