@@ -13,7 +13,7 @@ class PostControllerApi extends Controller
     {
         return response()->json(['ok']);
     }
-
+    //          POSTS METHODS           //
     // GET /api/posts
     public function index()
     {
@@ -24,7 +24,8 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error' => "Failed to fetch posts"],500);
+            
         }
     }
 
@@ -34,15 +35,11 @@ class PostControllerApi extends Controller
         try 
         {
             $post = Post::find($id);
-            if (!$post) 
-            {
-                return response()->json(['error' => 'Post not found'], 404);
-            }
             return response()->json($post);
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Post not found'], 404);
         }
     }
 
@@ -62,7 +59,7 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to create post'], 500);
         }
     }
 
@@ -72,9 +69,9 @@ class PostControllerApi extends Controller
         try 
         {
             $post = Post::find($id);
-            if (!$post) 
+            if(! $post)
             {
-                return response()->json(['error' => 'Post not found'], 404);
+                return response()->json(['error'=> 'Post not found'],404);
             }
             $data = $request->validate([
                 'title' => 'string|max:255',
@@ -86,7 +83,7 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update post'], 500);
         }
     }
 
@@ -108,7 +105,7 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update comments'], 500);
         }
     }
 
@@ -122,7 +119,7 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to fetch comments'], 500);
         }
     }
 
@@ -131,68 +128,45 @@ class PostControllerApi extends Controller
     {
         try {
             $post = Post::find($id);
-            if (!$post) {
-                return response()->json(['error' => 'Not found'], 404);
+            if (!$post) 
+            {
+                return response()->json(['error' => 'Post Not found'], 404);
             }
             $post->delete();
             return response()->json(['message' => 'Deleted']);
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
-        }
-    }
+            return response()->json(['error' => 'Failed to delete post'], 500);
 
-    // GET /api/users/{id}/posts
-    public function userPosts($id)
-    {
-        try 
-        {
-            $user = User::find($id);
-            if (!$user) 
-            {
-                return response()->json(['error' => 'User not found'], 404);
-            }
-            return response()->json($user->posts);
-        } 
-        catch (\Exception $e) 
-        {
-            return response()->json(['error'=> $e->getMessage()], 500);
         }
     }
 
     // GET /api/posts/{id}/author
     public function postAuthor($id)
     {
-        try {
+        try 
+        {
             $post = Post::find($id);
             if (!$post) 
             {
                 return response()->json(['error' => 'Post not found'], 404);
             }
             $user = $post->user;
-            return $user ? response()->json($user) : response()->json(['error'=>'User not found'], 404);
+            if (!$user) 
+            {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+            return response()->json($user);
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            // Responsibility: Unexpected error handling
+            return response()->json(['error' => 'Failed to fetch post author'], 500);
         }
     }
 
-    // GET /api/users/recent
-    public function recentUsers()
-    {
-        try 
-        {
-            $users = User::latest()->limit(10)->get();
-            return response()->json($users);
-        } 
-        catch (\Exception $e) 
-        {
-            return response()->json(['error'=> $e->getMessage()], 500);
-        }
-    }
-
+    
     // GET /api/posts/find?query=keyword
     public function findPosts(Request $request)
     {
@@ -208,7 +182,49 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error'=> 'Failed to search posts'], 500);
+        }
+    }
+
+    //          USERS METHODS           //
+    // GET /api/users/{id}/posts
+    public function userPosts($id)
+    {
+        try 
+        {
+            $user = User::find($id);
+            if (!$user) 
+            {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+            return response()->json($user->posts);
+        } 
+        catch (\Exception $e) 
+        {
+            return response()->json(['error' => 'Failed to fetch user posts'], 500);
+        }
+    }
+
+    // GET /api/users/recent
+    public function recentUsers()
+    {
+        try 
+        {
+            $users = User::latest()->limit(10)->get();
+            $userSummaries = $users->map(function ($user) { 
+                return [
+                'name' => $user->name,
+                'email' => $user->email,
+                'posts_count' => $user->posts()->count(),
+                'registered_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ];
+            });
+            return response()->json($userSummaries, 200);
+        } 
+        catch (\Exception $e) 
+        {
+            return response()->json(['error' => 'Failed to fetch recent users'], 500);
         }
     }
 
@@ -229,7 +245,7 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error'=> 'Failed to fetch user stats'], 500);
         }
     }
 }
