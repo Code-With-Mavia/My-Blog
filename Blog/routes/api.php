@@ -73,6 +73,4 @@ Route::prefix('users')->group(function () {
     Route::get('/{id}/stats', [ApiPostController::class, 'userStats']);
 });
 
-
-
 ?>
