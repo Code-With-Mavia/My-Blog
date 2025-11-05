@@ -28,7 +28,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()],500);   
+            return response()->json(['error' => $e->getMessage()],404);   
         }
     }
 
@@ -66,7 +66,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => 'Failed to create post. Please try again later'], 500);
+            return response()->json(['error' => 'Failed to create post. Please try again later'], 400);
         }
     }
 
@@ -131,7 +131,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 
@@ -149,7 +149,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 404);
 
         }
     }
@@ -162,7 +162,7 @@ class PostControllerApi extends Controller
             $post = Post::find($id);
             if (!$post) 
             {
-                throw new Exception('Post not found',404);
+                throw new Exception('Failed to fetch posts. Please try again later');
             }
             $user = $post->user;
             return response()->json($user);
@@ -170,7 +170,7 @@ class PostControllerApi extends Controller
         catch(Exception $e) 
         {
             // Responsibility: Unexpected error handling
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 
@@ -190,7 +190,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error'=> $e->getMessage()], 500);
+            return response()->json(['error'=> $e->getMessage()], 404);
         }
     }
 
@@ -209,7 +209,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 
@@ -236,7 +236,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 
@@ -260,7 +260,7 @@ class PostControllerApi extends Controller
         } 
         catch (Exception $e) 
         {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 }
