@@ -24,8 +24,7 @@ class PostControllerApi extends Controller
         } 
         catch (\Exception $e) 
         {
-            return response()->json(['error' => "Failed to fetch posts. Please try again later"],500);
-            
+            return response()->json(['error' => "Failed to fetch posts. Please try again later"],500);   
         }
     }
 
