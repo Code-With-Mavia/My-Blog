@@ -26,6 +26,7 @@ Route::prefix('posts')->group(function () {
     // GET /api/posts
     Route::get('/', [ApiPostController::class, 'index']);
 
+    
     // find posts by keyword in their title
     // GET /api/posts/find?query=keyword
     Route::get('/find', [ApiPostController::class, 'findPosts']);
@@ -57,7 +58,13 @@ Route::prefix('posts')->group(function () {
     Route::delete('/{id}', [ApiPostController::class, 'destroy']);
     
 });
+// CATEGORY ROUTES
+Route::prefix('categories')->group(function () {
+    
+    // GET api/categories
+    Route::get('/', [ApiPostController::class,'categories']);
 
+});
 //  USERS ROUTES 
 Route::prefix('users')->group(function () {
 

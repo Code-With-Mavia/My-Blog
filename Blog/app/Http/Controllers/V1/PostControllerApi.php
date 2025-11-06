@@ -6,7 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\V1\Models\Post;
 use App\Http\Controllers\V1\Models\User;
+use App\Http\Controllers\v1\Models\Category;
+use Car;
 use Exception;
+
+use function Pest\Laravel\json;
+
 class PostControllerApi extends Controller
 {
     public function test()
@@ -19,7 +24,7 @@ class PostControllerApi extends Controller
     {
         try 
         {
-            $posts = Post::select('id', 'user_id', 'title', 'comments', 'created_at','updated_at')->latest()->paginate(15);
+            $posts = Post::select('id', 'user_id','category_id', 'title','body', 'comments', 'created_at','updated_at')->latest()->paginate(15);
             if ($posts->isEmpty())
             {
                 throw new Exception('Failed to fetch posts. Please try again later');
@@ -218,13 +223,14 @@ class PostControllerApi extends Controller
     {
         try 
         {
-            $users = User::latest()->limit(10)->get();
+            $users = User::latest()->limit(30)->get();
             if(count($users) == 0)
             {
                 throw new Exception('Failed to fetch recent users. Please try again later');
             }
             $userSummaries = $users->map(function ($user) { 
                 return [
+                'id'=> $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'posts_count' => $user->posts()->count(),
@@ -261,6 +267,25 @@ class PostControllerApi extends Controller
         catch (Exception $e) 
         {
             return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
+    // Categories Methods
+    // GET api/categories
+    public function categories()
+    {
+        try 
+        {
+            $categories = Category::select('id','name', 'slug', 'created_at', 'updated_at')->paginate(10)->get();
+            if (!$categories)
+            {
+                throw new Exception('Categoires not found',402);
+            }
+            return response()->json($categories,200);
+        }
+        catch (Exception $e)
+        {
+            return response()->json(['error'=> $e->getMessage()], 404);
         }
     }
 }
