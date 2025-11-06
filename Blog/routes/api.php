@@ -20,7 +20,6 @@ Route::prefix('test')->group(function () {
     });
 });
 
-
 //  POSTS ROUTES 
 Route::prefix('posts')->group(function () {
     // List all posts
